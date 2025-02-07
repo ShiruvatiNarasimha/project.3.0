@@ -1,12 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+// Form type definition
 type FormInput = {
   repoUrl: string;
   projectName: string;
@@ -15,47 +17,74 @@ type FormInput = {
 
 const CreatePage = () => {
   const { register, handleSubmit, reset } = useForm<FormInput>();
+  const createProject = api.project.createProject.useMutation();
 
   function onSubmit(data: FormInput) {
+    createProject.mutate(
+      {
+        githubUrl: data.repoUrl,
+        name: data.projectName,
+        githubToken: data.githubToken,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Project created successfully");
+          reset();
+        },
+        onError: () => {
+          toast.error("Failed to create project");
+        },
+      },
+    );
     return true;
   }
+
   return (
-    <div className="flex h-full items-center justify-center gap-12">
-      <img src="/undraw_github.svg" className="h-56 w-auto" />
-      <div>
-        <div>
-          <h1 className="text-2xl font-semibold">
-            Link your GitHub Repository
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-6">
+      <Card className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+        <div className="text-center">
+          <img
+            src="/undraw_github.svg"
+            alt="Logo"
+            className="mx-auto mb-4 h-16 w-16"
+          />
+          <h1 className="text-3xl font-bold text-gray-900">
+            Link GitHub Repository
           </h1>
-          <p className="text-muted-foreground text-sm">
-            Enter the URL of your repository to link it to GitHub.AI
+          <p className="mt-2 text-sm text-gray-500">
+            Enter the repository URL to connect it to GitHub.AI
           </p>
         </div>
-        <div className="h-4"></div>
-        <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mt-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input
               {...register("projectName", { required: true })}
               placeholder="Project Name"
               required
+              className="rounded-lg border border-gray-300 p-3 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             />
-            <div className="h-2"></div>
             <Input
               {...register("repoUrl", { required: true })}
-              placeholder="Github URL"
+              placeholder="GitHub URL"
               type="url"
               required
+              className="rounded-lg border border-gray-300 p-3 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             />
-            <div className="h-2"></div>
             <Input
               {...register("githubToken")}
-              placeholder="Github Token (Optional)"
+              placeholder="GitHub Token (Optional)"
+              className="rounded-lg border border-gray-300 p-3 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             />
-            <div className="h-4"></div>
-            <Button type="submit">Create Project</Button>
+            <Button
+              type="submit"
+              disabled={createProject.isPending}
+              className="w-full rounded-lg bg-indigo-600 py-3 text-white transition duration-200 hover:bg-indigo-700 disabled:opacity-50"
+            >
+              Create Project
+            </Button>
           </form>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

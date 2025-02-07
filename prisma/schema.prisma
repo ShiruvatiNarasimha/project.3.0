@@ -11,23 +11,41 @@ datasource db {
 }
 
 model User {
-    id            String   @id @default(cuid())
-    createAt      DateTime
-    updatedAt     DateTime @updatedAt
-    imageUrl      String?
-    firstName     String?
-    lastName      String?
+    id    String  @id @default(cuid())
+    createAt  DateTime  @default(now())
+    updatedAt  DateTime   @updatedAt
 
-    emailAddress  String  @unique
+    imageUrl  String?
+    firstName  String?
+    lastName   String?
+
+    emailAddress String @unique
+
     credits Int @default(150)
+    userToProjects UserToProject[]
+
 }
 
-model Project {
-    id    String   @id @default(cuid())
-    created   DateTime @default(now())
-    updatedAt DateTime @updatedAt()
 
-    name String
-    githubUrl String
-    deletedAt DateTime?
+model Project {
+  id            String          @id @default(cuid())
+  name          String
+  githubUrl     String
+  githubToken   String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt   DateTime?
+  userToProjects UserToProject[]
+}
+
+model UserToProject {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, projectId])
 }
