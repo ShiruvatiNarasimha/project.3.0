@@ -37,16 +37,38 @@ export const getCommitHashes = async (
 
 export const pollCommits = async (projectId: string) => {
   const { project, githubUrl } = await fetchProjectGithubUrl(projectId);
+  const commitHashes = await getCommitHashes(githubUrl);
+  const unprocessedCommits = await filterUnprocessedCommits(
+    projectId,
+    commitHashes,
+  );
 };
 
-export const fetchProjectGithubUrl = async (projectId: string) => {
+async function fetchProjectGithubUrl(projectId: string) {
   const project = await db.project.findUnique({
-    where: {
-      id: projectId,
-    },
+    where: { id: projectId },
     select: {
       githubUrl: true,
     },
   });
-  return { project, githubUrl: project?.githubUrl };
-};
+  if (!project?.githubUrl) {
+    throw new Error("Project has no github url");
+  }
+  return { project, githubUrl: project.githubUrl };
+}
+
+async function filterUnprocessedCommits(
+  projectId: string,
+  commitHashes: Response[],
+) {
+  const processedCommits = await db.commit.findMany({
+    where: { projectId },
+  });
+  const unprocessedCommits = commitHashes.filter(
+    (commit) =>
+      !processedCommits.some(
+        (processedCommit) => processedCommit.commitHash === commit.commitHash,
+      ),
+  );
+  return unprocessedCommits;
+}
