@@ -37,10 +37,8 @@ Most commits will have less comments than this examples list
 The last comment dose not include the file names,
 because there were more than two relevant files in the hypothetical commit.
 Do not include parts of the example in your summary.
- 
- 
-
-
-`,
+It is given only as an example of appropriate comments. ',
+         Please summarise thefolling diff file. \n\n${diff}`,
   ]);
+  return response.response.text();
 };
