@@ -7,7 +7,7 @@ const model = genAI.getGenerativeModel({
 });
 
 export const aisummariseCommit = async (diff: string) => {
-  // https://github.com/docker/genai-stack/commit/<commithash>.diff
+  // /commit/<commithash>.diff
   const response = await model.generateContent([
     `You are an expert programmer, and you are trying to summarize a git diff.
 Reminders about the git diff format:

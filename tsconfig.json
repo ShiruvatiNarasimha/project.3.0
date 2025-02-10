@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    /* Base Options */
+    /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
@@ -13,14 +13,10 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
-    "allowSyntheticDefaultImports": true,
 
-    /* Debugging Support */
-    "sourceMap": true,
-
-    /* Bundled Projects */
+    /* Bundled projects */
     "lib": ["dom", "dom.iterable", "ES2022"],
-    "noEmit": false,
+    "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
@@ -30,11 +26,8 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    },
-
-    /* Output Directory */
-    "outDir": "./build"
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     ".eslintrc.cjs",
