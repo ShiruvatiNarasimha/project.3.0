@@ -1,5 +1,7 @@
 import { db } from "@/server/db";
 import { Octokit } from "octokit";
+import axios from "axios";
+import { aisummariseCommit } from "./gemini";
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
@@ -46,9 +48,30 @@ export const pollCommits = async (projectId: string) => {
     projectId,
     commitHashes,
   );
-  console.log(unprocessedCommits);
+  const summaryResponses = await Promise.allSettled(
+    unprocessedCommits.map((commit) => {
+      return summariseCommit(githubUrl, commit.commitHash);
+    }),
+  );
+  const summaries = summaryResponses.map((response) => {
+    if (response.status === "fulfilled") {
+      return response.value;
+    }
+    return "";
+  });
   return unprocessedCommits;
 };
+
+async function summariseCommit(githubUrl: string, commitHash: string) {
+  //get the diff. then passthe diff into ai
+
+  const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`, {
+    headers: {
+      Accept: "application/vnd.gihub.v3.diff",
+    },
+  });
+  return (await aisummariseCommit(data)) || "";
+}
 
 async function fetchProjectGithubUrl(projectId: string) {
   const project = await db.project.findUnique({
