@@ -16,13 +16,22 @@ type Response = {
 export const getCommitHashes = async (
   githubUrl: string,
 ): Promise<Response[]> => {
-  const [owner, repo] = githubUrl.split("/").slice(-2);
-  if (!owner || !repo) {
-    throw new Error("Invalid github url");
-  }
-  const { data } = await octokit.rest.repos.listCommitCommentsForRepo({
-    owner"ShiruvatiNarasimha",
-    repo:"AIWorkFlow"
-  })
+  const { data } = await octokit.rest.repos.listCommits({
+    owner: "ShiruvatiNarasimha",
+    repo: "AIWorkFlow",
+  });
+  const sortedCommits = data.sort(
+    (a: any, b: any) =>
+      new Date(b.commit.author.data).getTime() -
+      new Date(a.commit.author.date).getTime(),
+  ) as any[];
+  return sortedCommits.slice(0, 15).map((commit: any) => ({
+    commitHash: commit.sha as string,
+    commitMessage: commit.commit.message ?? "",
+    commitAuthorName: commit.commit?.author?.name ?? "",
+    commitAuthorAvatar: commit?.author?.avatar_url ?? "",
+    CommitDate: commit.commit?.author?.date ?? "",
+  }));
+};
 
-} 
+console.log(await getCommitHashes(githubUrl));
