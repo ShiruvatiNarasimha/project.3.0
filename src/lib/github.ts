@@ -1,4 +1,4 @@
-import { db } from "@/server/db";
+import { db } from "../server/db";
 import { Octokit } from "octokit";
 import axios from "axios";
 import { aisummariseCommit } from "./gemini";
