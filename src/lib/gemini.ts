@@ -7,7 +7,7 @@ const model = genAI.getGenerativeModel({
 });
 
 export const aisummariseCommit = async (diff: string) => {
-  // /commit/<commithash>.diff
+  // https://github.com/ShiruvatiNarasimha/AIWorkFlow/commit/<commithash>.diff
   const response = await model.generateContent([
     `You are an expert programmer, and you are trying to summarize a git diff.
 Reminders about the git diff format:
@@ -16,7 +16,7 @@ For every file, there are a few metadata lines, like (for example):
 diff --git a/lib/index.js b/lib/index.js 
 index aadf691..bfef603 100644 
 --- a/lib/index.js  
-+++ b/lib/index.js  
++++ b/lib/index.js    
 \`\`\`
 This means that \`lib/index.js\` was modified in this commit. Note that this is only an example.
 Then there is a specifier of the lines that were modified. 
@@ -37,8 +37,8 @@ Most commits will have fewer comments than this example list.
 The last comment does not include the file names,
 because there were more than two relevant files in the hypothetical commit.
 Do not include parts of the example in your summary.
-It is given only as an example of appropriate comments.
-Please summarize the following diff file. \n\n${diff}`,
+It is given only as an example of appropriate comments.`,
+    ` Please summarize the following diff file. \n\n${diff}`,
   ]);
   return response.response.text();
 };
