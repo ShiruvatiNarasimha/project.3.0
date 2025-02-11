@@ -5,7 +5,7 @@ export const loadGithubRepo = async (
   githubToken?: string,
 ) => {
   const loader = new GithubRepoLoader(githubUrl, {
-    accessToken: GITHUB_TOKEN || "",
+    accessToken: githubToken || "",
     branch: "main",
     ignoreFiles: [
       "package-lock.json",
@@ -22,5 +22,5 @@ export const loadGithubRepo = async (
 };
 
 console.log(
-  await loadGithubRepo("https://github.com/elliott-chong/chatpdf-yt"),
+  await loadGithubRepo("https://github.com/ShiruvatiNarasimha/AI-Blog"),
 );
