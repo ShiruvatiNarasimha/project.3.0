@@ -3,11 +3,13 @@
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
+    extensions = [vector]
 }
 
 model User {
@@ -36,6 +38,7 @@ model Project {
   updatedAt     DateTime        @updatedAt
   deletedAt   DateTime?
   userToProjects UserToProject[]
+  sourceCodeEmbeddings  SourceCodeEmbedding[]
   commits        Commit[]
 }
 
@@ -50,6 +53,22 @@ model UserToProject {
 
   @@unique([userId, projectId])
 }
+
+
+model SourceCodeEmbedding {
+  id        String @id @default(cuid())
+
+  summaryEmbedding    Unsupported("vectoe(768)")?
+  sourceCode        String
+  fileName      String
+  summary       String
+
+
+
+  projectId    String
+  project  Project @relation(fields: [projectId], references: [id])
+}
+
 
 
 model Commit {
