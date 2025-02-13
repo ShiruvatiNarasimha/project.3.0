@@ -35,6 +35,18 @@ export const indexGithubRepo = async (
     allEmbeddings.map(async (embedding, index) => {
       console.log(`processing ${index} of ${allEmbeddings.length}`);
       if (!embedding) return;
+
+      const sourceCodeEmbedding = await db.sourceCodeEmbedding.create({
+        data: {
+          summary: embedding.summary,
+          sourceCode: embedding.sourceCode,
+          fileName: embedding.fileName,
+          projectId,
+        },
+      });
+      await db.$executeRaw`
+
+      `;
     }),
   );
 };
