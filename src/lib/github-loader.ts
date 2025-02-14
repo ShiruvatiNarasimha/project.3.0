@@ -36,7 +36,7 @@ export const indexGithubRepo = async (
       console.log(`processing ${index} of ${allEmbeddings.length}`);
       if (!embedding) return;
 
-      const sourceCodeEmbedding = await db.sourceCodeEmbedding.create({
+      const sourCeCodeEmbedding = await db.sourceCodeEmbedding.create({
         data: {
           summary: embedding.summary,
           sourceCode: embedding.sourceCode,
@@ -44,11 +44,11 @@ export const indexGithubRepo = async (
           projectId,
         },
       });
+
       await db.$executeRaw`
       UPDATE "SourceCodeEmbedding"
-      SET "summaryEmbedding" = ${embedding.embedding}:: vector
-      WHERE "id" = ${sourceCodeEmbedding.id}
-
+      SET "summaryEmbedding" = ${embedding.embedding} :: vector
+      WHERE "id" = ${sourCeCodeEmbedding.id}
       `;
     }),
   );
