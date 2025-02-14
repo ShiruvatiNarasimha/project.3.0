@@ -12,14 +12,20 @@ import { Textarea } from "@/components/ui/textarea";
 import useProject from "@/hooks/use-project";
 import Image from "next/image";
 import React from "react";
+import { askQuestion } from "./actions";
 
 const AskQuestionCard = () => {
   const { project } = useProject();
   const [open, setOpen] = React.useState(false);
   const [question, setQuestion] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!project?.id) return;
+    setLoading(true);
     setOpen(true);
+
+    const { output, filesReferences } = await askQuestion(question, project.id);
   };
   return (
     <>
