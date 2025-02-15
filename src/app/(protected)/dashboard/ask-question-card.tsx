@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import MDEditor from "@uiw/react-md-editor";
 import { Textarea } from "@/components/ui/textarea";
 import useProject from "@/hooks/use-project";
 import Image from "next/image";
@@ -26,12 +27,14 @@ const AskQuestionCard = () => {
   >([]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setAnswer("");
+    setFilesReferences([]);
     e.preventDefault();
     if (!project?.id) return;
     setLoading(true);
-    setOpen(true);
 
     const { output, filesReferences } = await askQuestion(question, project.id);
+    setOpen(true);
     setFilesReferences(filesReferences);
 
     for await (const delta of readStreamableValue(output)) {
@@ -44,7 +47,7 @@ const AskQuestionCard = () => {
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[70vw]">
           <DialogHeader>
             <DialogTitle>
               <Image
@@ -55,11 +58,18 @@ const AskQuestionCard = () => {
               />
             </DialogTitle>
           </DialogHeader>
-          {answer}
-          <h1>File References</h1>
-          {filesReferences.map((file) => {
-            return <span>{file.fileName}</span>;
-          })}
+          <MDEditor.Markdown
+            source={answer}
+            className="!h-full max-h-[49vh] max-w-[70vw] overflow-scroll"
+          />
+          <Button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            Close
+          </Button>
         </DialogContent>
       </Dialog>
       <Card className="relative col-span-2">
@@ -74,7 +84,9 @@ const AskQuestionCard = () => {
               onChange={(e) => setQuestion(e.target.value)}
             />
             <div className="h-4"></div>
-            <Button type="submit">Ask AI</Button>
+            <Button type="submit" disabled={loading}>
+              Ask AI
+            </Button>
           </form>
         </CardContent>
       </Card>
