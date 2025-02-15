@@ -13,12 +13,18 @@ import useProject from "@/hooks/use-project";
 import Image from "next/image";
 import React from "react";
 import { askQuestion } from "./actions";
+import { readStreamableValue } from "ai/rsc";
 
 const AskQuestionCard = () => {
   const { project } = useProject();
   const [open, setOpen] = React.useState(false);
   const [question, setQuestion] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [answer, setAnswer] = React.useState("");
+  const [filesReferences, setFilesReferences] = React.useState<
+    { fileName: string; sourceCode: string; summary: string }[]
+  >([]);
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!project?.id) return;
@@ -26,6 +32,14 @@ const AskQuestionCard = () => {
     setOpen(true);
 
     const { output, filesReferences } = await askQuestion(question, project.id);
+    setFilesReferences(filesReferences);
+
+    for await (const delta of readStreamableValue(output)) {
+      if (delta) {
+        setAnswer((ans) => ans + delta);
+      }
+    }
+    setLoading(false);
   };
   return (
     <>
@@ -41,6 +55,11 @@ const AskQuestionCard = () => {
               />
             </DialogTitle>
           </DialogHeader>
+          {answer}
+          <h1>File References</h1>
+          {filesReferences.map((file) => {
+            return <span>{file.fileName}</span>;
+          })}
         </DialogContent>
       </Dialog>
       <Card className="relative col-span-2">

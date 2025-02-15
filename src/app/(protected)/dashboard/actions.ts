@@ -67,7 +67,7 @@ Answer in markdown syntax, with code snippets if needed. Be as detailed as possi
   })();
 
   return {
-    output: stream,
+    output: stream.value,
     filesReferences: result,
   };
 }
