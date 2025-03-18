@@ -81,6 +81,5 @@ model Commit {
 
   commitMessage  String
   commitHash String
-  commitAuthorName  String
 
 }
