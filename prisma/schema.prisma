@@ -83,6 +83,5 @@ model Commit {
   commitHash String
   commitAuthorName  String
   commitAuthorAvatar  String
-  summary   String
 
 }
