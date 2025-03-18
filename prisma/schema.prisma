@@ -80,6 +80,4 @@ model Commit {
   project Project @relation(fields: [projectId], references: [id])
 
   commitMessage  String
-  commitHash String
-
 }
