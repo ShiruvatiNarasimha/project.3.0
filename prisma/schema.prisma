@@ -79,5 +79,4 @@ model Commit {
   projectId String
   project Project @relation(fields: [projectId], references: [id])
 
-  commitMessage  String
 }
