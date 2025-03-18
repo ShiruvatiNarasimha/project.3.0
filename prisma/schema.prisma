@@ -73,5 +73,4 @@ model SourceCodeEmbedding {
 
 model Commit {
   id String  @id @default(cuid())
-  createAt DateTime @default(now())
 }
