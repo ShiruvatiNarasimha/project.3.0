@@ -37,13 +37,7 @@ export function LatestPost() {
           onChange={(e) => setName(e.target.value)}
           className="w-full rounded-full px-4 py-2 text-black"
         />
-        <button
-          type="submit"
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
-          disabled={createPost.isPending}
-        >
-          {createPost.isPending ? "Submitting..." : "Submit"}
-        </button>
+       
       </form>
     </div>
   );
